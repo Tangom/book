@@ -5,7 +5,5 @@ public class Example {
         return a+b;
     }
 
-    public static void main(String[] args) {
 
-    }
 }
