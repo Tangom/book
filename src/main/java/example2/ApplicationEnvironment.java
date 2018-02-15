@@ -1,21 +1,34 @@
 package example2;
 
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.ViewResolver;
+import org.springframework.web.servlet.view.InternalResourceViewResolver;
+import org.springframework.web.servlet.view.JstlView;
+import org.springframework.web.servlet.view.ResourceBundleViewResolver;
+
+import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+@Configuration
+@ComponentScan(basePackages ="example2" )
 public class ApplicationEnvironment {
-    private final EntityManagerFactory emf;
-    private static final ApplicationEnvironment instance =new ApplicationEnvironment();
-
-    private ApplicationEnvironment() {
-        emf = Persistence.createEntityManagerFactory("TestPersistenceUnit");
+    @Bean
+    public EntityManagerFactory getFactory() {
+        return  Persistence.createEntityManagerFactory("TestPersistenceUnit");
     }
-
-    public EntityManagerFactory getEmf() {
-        return emf;
+     @Bean
+    public EntityManager getEntityManager (EntityManagerFactory emf){
+        return emf.createEntityManager();
     }
-
-    public static ApplicationEnvironment getInstance() {
-        return instance;
+    @Bean
+    public ViewResolver getResolver (){
+        InternalResourceViewResolver resolver = new InternalResourceViewResolver ();
+        resolver.setSuffix(".jsp");
+        resolver.setPrefix("/");
+        resolver.setViewClass(JstlView.class);
+        return resolver;
     }
 }
